@@ -151,9 +151,15 @@ var Engine = (function(global) {
             enemy.render();
         });
 
-        player.render();
         gem.render();
-    }
+        player.render();
+
+/*        allGems.forEach(function(gem) {
+            gem.render();
+        });
+*/
+
+   }
 
     /* This function does nothing but it could have been a good place to
      * handle game reset states - maybe a new game menu or a game over screen
@@ -173,9 +179,9 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/Gem-Green.png',
+        'images/rsz_gem-green.png',
         'images/rsz_gem-blue.png',
-        'images/Gem-Orange.png'
+        'images/rsz_gem-orange.png'
     ]);
     Resources.onReady(init);
 

@@ -33,6 +33,7 @@ Enemy.prototype.render = function() {
 var Player = function (x,y) {
     this.x = x;
     this.y = y;
+    this.score = 0;
     this.sprite = 'images/char-boy.png'
 }
 
@@ -70,20 +71,55 @@ Player.prototype.handleInput = function(direction) {
     } else if (this.y < 60) {
         this.y = 60;
     }
+
+    if (this.x === gem.x && this.y === gem.y) {
+        player.score += gem.score;
+    }
     //log current position to console
     //gives us the x,y position of each block
     console.log("x: " + this.x);
     console.log("y: " + this.y);
-
+    console.log('Gem X: ' + gem.x);
+    console.log('Gem Y: ' + gem.y);
+    console.log('score: ' + gem.points);
 }
 
 
 //************Gems Classes******************
 
-var Gem = function(x, y) {
-    this.x = x;
-    this.y = y;
-    this.sprite = 'images/rsz_gem-blue.png';
+
+
+
+var Gem = function() {
+    //Set up array for valid x,y positions for gems.
+    //This keeps the gems neatly in the squares.
+    var validX = [25,125,225,325,425];
+    var validY = [105,195,275];
+
+    //Choose random position for gem from valid position arrays
+    this.x = validX[Math.floor(Math.random()*validX.length)];
+    this.y = validY[Math.floor(Math.random()*validY.length)];
+
+    /* Pick random gem color. Since gems are worth different points
+       depending on color, higher point gems should appear less
+       often.
+       Green ~ 60% chance
+       Blue ~ 30% chance
+       Orange ~ 10% chance
+    */
+    var gemColor = Math.floor((Math.random() * 99) + 1);
+    if (gemColor >= 1 && gemColor <= 59) {
+            this.sprite = 'images/rsz_gem-green.png';
+            this.points = 10;
+
+        } else if (gemColor >= 60 && gemColor <= 89) {
+            this.sprite = 'images/rsz_gem-blue.png';
+            this.points = 20;
+        } else if (gemColor >= 90 && gemColor <= 100) {
+            this.sprite = 'images/rsz_gem-orange.png';
+            this.points = 50;
+        }
+        console.log("blah " + this.points);
 }
 
 Gem.prototype.render = function() {
@@ -97,7 +133,12 @@ Gem.prototype.render = function() {
 
 var allEnemies = [];
 var player = new Player(200, 380);
-var gem = new Gem(100, 120);
+var gem = new Gem();
+
+//Set up variables for gem scores. Use all caps to denote constant.
+var GREEN_GEM_SCORE = 10;
+var BLUE_GEM_SCORE = 50;
+var ORANGE_GEM_SCORE = 100;
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
