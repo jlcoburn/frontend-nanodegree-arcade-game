@@ -1,11 +1,12 @@
 
 
-// ************Enemies Classes****************************
-var Enemy = function() {
+// ************Enemy Classes****************************
+var Enemy = function(x,y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-    this.x;
-    this.y;
+    this.x = x;
+    this.y = y;
+    this.speed = Math.floor((Math.random() * 5) + 1);
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -14,14 +15,32 @@ var Enemy = function() {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
+
+    this.x = Math.floor(this.x + 101 * dt * this.speed);
+    this.y = this.y;
+
+    if (this.x > 505) {
+        this.reset();
+    }
+    //console.log(this.x,this.y);
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
 };
 
+//Reset enemy if at end of screen
+Enemy.prototype.reset = function() {
+    this.speed = Math.floor((Math.random() * 5) + 1);
+    this.x = -200;
+    //choose valid y coordinate
+    var validY = [50,130,210];
+    this.y = validY[Math.floor((Math.random() *3))];
+    player.checkCollisions();
+};
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    //console.log(this.x, this.y);
 };
 
 // Now write your own player class
@@ -34,17 +53,18 @@ var Player = function (x,y) {
     this.x = x;
     this.y = y;
     this.score = 0;
-    this.sprite = 'images/char-boy.png'
-}
+    this.sprite = 'images/char-boy.png';
+};
 
 Player.prototype.update = function() {
     this.x = this.x;
     this.y = this.y;
-}
+};
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite),this.x,this.y);
-}
+};
+
 
 Player.prototype.handleInput = function(direction) {
     //Change position of player based upon 'direction' received from
@@ -72,29 +92,46 @@ Player.prototype.handleInput = function(direction) {
         this.y = 60;
     }
 
-    if (this.x === gem.x && this.y === gem.y) {
-        player.score += gem.score;
-    }
+    this.checkCollisions();
     //log current position to console
     //gives us the x,y position of each block
-    console.log("x: " + this.x);
-    console.log("y: " + this.y);
-    console.log('Gem X: ' + gem.x);
-    console.log('Gem Y: ' + gem.y);
-    console.log('score: ' + gem.points);
-}
+    console.log("player x: " + this.x);
+    console.log("player y: " + this.y);
+    console.log("enemy x: " + Math.floor(enemy.x));
+    console.log("enemy y: " + Math.floor(enemy.y));
+    //console.log('Gem X: ' + gem.x);
+    //console.log('Gem Y: ' + gem.y);
+    //console.log('score: ' + player.score);
+};
+
+Player.prototype.checkCollisions = function() {
+
+    //Check for collision with Gem
+    if ((this.x + 25) === gem.x && (this.y + 55) === gem.y) {
+        player.score += gem.points;
+    }
+
+    if ((this.y - 10) === enemy.y && ((this.x - 20) < Math.floor(enemy.x)) && this.x + 20 > Math.floor(enemy.x)) {
+        this.x = 200;
+        this.y = 380;
+        console.log("Player is dumb");
+    }
+};
 
 
 //************Gems Classes******************
-
-
-
 
 var Gem = function() {
     //Set up array for valid x,y positions for gems.
     //This keeps the gems neatly in the squares.
     var validX = [25,125,225,325,425];
-    var validY = [105,195,275];
+    var validY = [115,195,275];
+
+    //Set variable for gem points. Use all caps to denote CONST
+    var GREEN_GEM_SCORE = 10;
+    var BLUE_GEM_SCORE = 50;
+    var ORANGE_GEM_SCORE = 100;
+
 
     //Choose random position for gem from valid position arrays
     this.x = validX[Math.floor(Math.random()*validX.length)];
@@ -110,21 +147,20 @@ var Gem = function() {
     var gemColor = Math.floor((Math.random() * 99) + 1);
     if (gemColor >= 1 && gemColor <= 59) {
             this.sprite = 'images/rsz_gem-green.png';
-            this.points = 10;
+            this.points = GREEN_GEM_SCORE;
 
         } else if (gemColor >= 60 && gemColor <= 89) {
             this.sprite = 'images/rsz_gem-blue.png';
-            this.points = 20;
+            this.points = BLUE_GEM_SCORE;
         } else if (gemColor >= 90 && gemColor <= 100) {
             this.sprite = 'images/rsz_gem-orange.png';
-            this.points = 50;
+            this.points = ORANGE_GEM_SCORE;
         }
-        console.log("blah " + this.points);
-}
+};
 
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 
 // Now instantiate your objects.
@@ -135,10 +171,18 @@ var allEnemies = [];
 var player = new Player(200, 380);
 var gem = new Gem();
 
-//Set up variables for gem scores. Use all caps to denote constant.
-var GREEN_GEM_SCORE = 10;
-var BLUE_GEM_SCORE = 50;
-var ORANGE_GEM_SCORE = 100;
+var validY = [50,130,210];
+for (var i = 0; i < 5; i++) {
+    var y= 0;
+    var x = -20;
+    y = validY[Math.floor(Math.random()*validY.length)];
+    //console.log(x,y);
+    var enemy = new Enemy(x,y);
+    allEnemies.push(enemy);
+}
+
+console.log(allEnemies);
+
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
