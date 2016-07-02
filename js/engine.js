@@ -80,6 +80,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
+        document.getElementsByClassName('score')[0].innerHTML = 'Player Score: ' + player.score;
         // checkCollisions();
     }
 
@@ -147,17 +148,14 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+         gem.render();
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
 
-        gem.render();
         player.render();
 
-/*        allGems.forEach(function(gem) {
-            gem.render();
-        });
-*/
+
 
    }
 
