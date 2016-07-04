@@ -22,7 +22,17 @@ Enemy.prototype.update = function(dt) {
     if (this.x > 505) {
         this.reset();
     }
-    //console.log(this.x,this.y);
+
+
+    if (this.x + 50 >= player.x && this.x < player.x + 50 &&
+        this.y === player.y) {
+        player.x = 200;
+        player.y = 380;
+        player.lives -= 1;
+        player.score = 0;
+
+    }
+
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
@@ -31,11 +41,11 @@ Enemy.prototype.update = function(dt) {
 //Reset enemy if at end of screen
 Enemy.prototype.reset = function() {
     this.speed = Math.floor((Math.random() * 5) + 1);
-    this.x = -200;
+    this.x = -20;
     //choose valid y coordinate
-    var validY = [50,130,210];
+    var validY = [60,140,220];
     this.y = validY[Math.floor((Math.random() *3))];
-    player.checkCollisions();
+
 };
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
@@ -52,6 +62,7 @@ Enemy.prototype.render = function() {
 var Player = function (x,y) {
     this.x = x;
     this.y = y;
+    this.lives = 5;
     this.score = 0;
     this.sprite = 'images/char-boy.png';
 };
@@ -95,10 +106,10 @@ Player.prototype.handleInput = function(direction) {
     this.checkCollisions();
     //log current position to console
     //gives us the x,y position of each block
-    console.log("player x: " + this.x);
-    console.log("player y: " + this.y);
-    console.log("enemy x: " + Math.floor(enemy.x));
-    console.log("enemy y: " + Math.floor(enemy.y));
+    //console.log("player x: " + this.x);
+    //console.log("player y: " + this.y);
+    //console.log("enemy x: " + Math.floor(enemy.x));
+    //console.log("enemy y: " + Math.floor(enemy.y));
     //console.log('Gem X: ' + gem.x);
     //console.log('Gem Y: ' + gem.y);
     //console.log('score: ' + player.score);
@@ -109,13 +120,24 @@ Player.prototype.checkCollisions = function() {
     //Check for collision with Gem
     if ((this.x + 25) === gem.x && (this.y + 55) === gem.y) {
         player.score += gem.points;
+        gem = new Gem();
     }
 
-    if ((this.y - 10) === enemy.y && ((this.x - 20) < Math.floor(enemy.x)) && this.x + 20 > Math.floor(enemy.x)) {
+    //Check for collision with enemy
+/*    if (enemy.x - 50 <= this.x && enemy.x > this.x - 50 &&
+        enemy.y === this.y) {
         this.x = 200;
         this.y = 380;
-        console.log("Player is dumb");
     }
+
+    if (this.y === enemy.y) {
+             if (((this.x - 20) < enemy.x) || ((this.x + 20) > enemy.x)) {
+            console.log("px: " + this.x + "ex: " + enemy.x);
+            console.log("py: " + this.y + "ey: " + enemy.y);
+            this.x = 200;
+            this.y = 380;
+            }
+        }*/
 };
 
 
@@ -171,8 +193,8 @@ var allEnemies = [];
 var player = new Player(200, 380);
 var gem = new Gem();
 
-var validY = [50,130,210];
-for (var i = 0; i < 5; i++) {
+var validY = [60,140,220];
+for (var i = 0; i < 3; i++) {
     var y= 0;
     var x = -20;
     y = validY[Math.floor(Math.random()*validY.length)];
@@ -181,12 +203,10 @@ for (var i = 0; i < 5; i++) {
     allEnemies.push(enemy);
 }
 
-console.log(allEnemies);
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keydown', function(e) {
     var allowedKeys = {
         37: 'left',
         38: 'up',

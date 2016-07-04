@@ -80,7 +80,8 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        document.getElementsByClassName('score')[0].innerHTML = 'Player Score: ' + player.score;
+        document.getElementById('score').innerHTML = 'Player Score: ' + player.score + "    ";
+        document.getElementById('lives').innerHTML = 'Lives: ' + player.lives;
         // checkCollisions();
     }
 
