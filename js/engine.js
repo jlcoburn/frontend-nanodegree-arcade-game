@@ -80,8 +80,8 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        document.getElementById('score').innerHTML = 'Player Score: ' + player.score + "    ";
-        document.getElementById('lives').innerHTML = 'Lives: ' + player.lives;
+        document.getElementById('yourGems').innerHTML = 'Your Gems: ' + player.score + "    ";
+        document.getElementById('momGems').innerHTML = 'Moms Gems: ' + player.momGems;
         // checkCollisions();
     }
 
@@ -137,7 +137,7 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
+        ctx.drawImage(Resources.get('images/Selector.png'), 404, 375);
         renderEntities();
     }
 
@@ -149,7 +149,7 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-         gem.render();
+        gem.render();
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
@@ -176,8 +176,12 @@ var Engine = (function(global) {
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
-        'images/enemy-bug.png',
+        'images/Selector.png',
         'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
         'images/rsz_gem-green.png',
         'images/rsz_gem-blue.png',
         'images/rsz_gem-orange.png'

@@ -1,7 +1,7 @@
 
 
 // ************Enemy Classes****************************
-var Enemy = function(x,y) {
+var Enemy = function(x,y,enemySprite) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     this.x = x;
@@ -9,7 +9,7 @@ var Enemy = function(x,y) {
     this.speed = Math.floor((Math.random() * 5) + 1);
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+    this.sprite = enemySprite;
 };
 
 // Update the enemy's position, required method for game
@@ -28,10 +28,11 @@ Enemy.prototype.update = function(dt) {
         this.y === player.y) {
         player.x = 200;
         player.y = 380;
-        player.lives -= 1;
         player.score = 0;
-
+        player.lives -= 1;
     }
+        if (player.lives === 0)
+            console.log("reset");
 
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
@@ -45,6 +46,16 @@ Enemy.prototype.reset = function() {
     //choose valid y coordinate
     var validY = [60,140,220];
     this.y = validY[Math.floor((Math.random() *3))];
+    var z = Math.floor(Math.random()*4);
+    if (z === 0)
+        this.sprite = 'images/char-horn-girl.png';
+    if (z === 1)
+        this.sprite = 'images/char-cat-girl.png';
+    if (z === 2)
+        this.sprite = 'images/char-pink-girl.png';
+    if (z === 3)
+        this.sprite = 'images/char-princess-girl.png';
+
 
 };
 // Draw the enemy on the screen, required method for game
@@ -65,6 +76,7 @@ var Player = function (x,y) {
     this.lives = 5;
     this.score = 0;
     this.sprite = 'images/char-boy.png';
+    this.momGems = 0;
 };
 
 Player.prototype.update = function() {
@@ -102,17 +114,10 @@ Player.prototype.handleInput = function(direction) {
     } else if (this.y < 60) {
         this.y = 60;
     }
-
+    console.log(this.x)
+    console.log(this.y);
     this.checkCollisions();
-    //log current position to console
-    //gives us the x,y position of each block
-    //console.log("player x: " + this.x);
-    //console.log("player y: " + this.y);
-    //console.log("enemy x: " + Math.floor(enemy.x));
-    //console.log("enemy y: " + Math.floor(enemy.y));
-    //console.log('Gem X: ' + gem.x);
-    //console.log('Gem Y: ' + gem.y);
-    //console.log('score: ' + player.score);
+
 };
 
 Player.prototype.checkCollisions = function() {
@@ -122,22 +127,10 @@ Player.prototype.checkCollisions = function() {
         player.score += gem.points;
         gem = new Gem();
     }
-
-    //Check for collision with enemy
-/*    if (enemy.x - 50 <= this.x && enemy.x > this.x - 50 &&
-        enemy.y === this.y) {
-        this.x = 200;
-        this.y = 380;
+    if ((this.x === 400) && this.y === 380) {
+        this.momGems = this.momGems + player.score;
+        player.score = 0;
     }
-
-    if (this.y === enemy.y) {
-             if (((this.x - 20) < enemy.x) || ((this.x + 20) > enemy.x)) {
-            console.log("px: " + this.x + "ex: " + enemy.x);
-            console.log("py: " + this.y + "ey: " + enemy.y);
-            this.x = 200;
-            this.y = 380;
-            }
-        }*/
 };
 
 
@@ -192,17 +185,26 @@ Gem.prototype.render = function() {
 var allEnemies = [];
 var player = new Player(200, 380);
 var gem = new Gem();
-
+var enemySprite;
 var validY = [60,140,220];
+//Assign enemies to array.
 for (var i = 0; i < 3; i++) {
     var y= 0;
     var x = -20;
+    //Randomly choose enemy sprite
+    var z = Math.floor(Math.random()*4);
+    if (z === 0)
+        enemySprite = 'images/char-horn-girl.png';
+    if (z === 1)
+        enemySprite = 'images/char-cat-girl.png';
+    if (z === 2)
+        enemySprite = 'images/char-pink-girl.png';
+    if (z === 3)
+        enemySprite = 'images/char-princess-girl.png';
     y = validY[Math.floor(Math.random()*validY.length)];
-    //console.log(x,y);
-    var enemy = new Enemy(x,y);
+    var enemy = new Enemy(x,y, enemySprite);
     allEnemies.push(enemy);
 }
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -216,3 +218,9 @@ document.addEventListener('keydown', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+window.addEventListener('keydown', function(e){
+  if ([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+    e.preventDefault();
+  }
+}, false);
