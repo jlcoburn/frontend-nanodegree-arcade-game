@@ -6,20 +6,28 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div>
+    <div id="scoreboard">
         <span id="yourGems"></span>
         <span id="momGems"></span>
+        <br />
+        <span id="playerSoul"></span>
     </div>
 
     <script src="js/resources.js"></script>
     <script src="js/app.js"></script>
     <script src="js/engine.js"></script>
-    <div class = "instructions">
-        <h1>How to play:</h1>
-        <span id="instructions">
 
-        </span>
+    <br />
+    <button onclick="showInstructions()">How to play</button>
+
+    <div id = "info" class="instructions">
+        <p>You are 5 year old Bobby Bugz. Your mom is sick, so you want to collect gems to make her feel better. Unfortunately, there are girls everywhere, and <strong>GIRLS ARE ICKY!</strong>. The girls want to steal your gems (and your soul). You must collect gems and take them home to mom. If the girls touch you, you will lose the gems you are holding and part of your soul. The game ends when you take 1000 gems home to mom. Or when you lose all of your soul, whichever comes first.</p>
+        <p>Use arrow keys or WASD for movement.</p>
+        <p><img src='images/rsz_gem-green.png'> is worth 10 gems.</p>
+        <p><img src='images/rsz_gem-blue.png'> is worth 50 gems.</p>
+        <p><img src='images/rsz_gem-orange.png'> is worth 100 gems.</p>
+        <p><img src='images/Selector.png'> Home</p>
+        <button onclick="hideInstructions()">Close</button>
     </div>
-
 </body>
 </html>

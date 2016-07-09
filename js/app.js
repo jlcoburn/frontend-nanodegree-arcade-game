@@ -6,6 +6,7 @@ var Enemy = function(x,y,enemySprite) {
     // we've provided one for you to get started
     this.x = x;
     this.y = y;
+    //Choose random speed modifier.
     this.speed = Math.floor((Math.random() * 5) + 1);
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -15,37 +16,37 @@ var Enemy = function(x,y,enemySprite) {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-
-    this.x = Math.floor(this.x + 101 * dt * this.speed);
-    this.y = this.y;
-
-    if (this.x > 505) {
-        this.reset();
-    }
-
-
-    if (this.x + 50 >= player.x && this.x < player.x + 50 &&
-        this.y === player.y) {
-        player.x = 200;
-        player.y = 380;
-        player.score = 0;
-        player.lives -= 1;
-    }
-        if (player.lives === 0)
-            console.log("reset");
-
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x = Math.floor(this.x + 101 * dt * this.speed);
+    this.y = this.y;
+
+    if (this.x > 909) {
+        this.reset();
+    }
+
+    //Check for player/enemy collision, set appropriate variables if true
+    if (this.x + 50 >= player.x && this.x < player.x + 50 &&
+        this.y === player.y) {
+        player.x = 400;
+        player.y = 540;
+        player.score = 0;
+        player.soul -= 20;
+
+    }
 };
 
 //Reset enemy if at end of screen
 Enemy.prototype.reset = function() {
+    //Choose random speed modifier.
     this.speed = Math.floor((Math.random() * 5) + 1);
     this.x = -20;
     //choose valid y coordinate
-    var validY = [60,140,220];
-    this.y = validY[Math.floor((Math.random() *3))];
+    var validY = [60,140,220,300,380,460];
+    this.y = validY[Math.floor((Math.random() * validY.length))];
+
+    //Randomize which enemy sprite appears on screen
     var z = Math.floor(Math.random()*4);
     if (z === 0)
         this.sprite = 'images/char-horn-girl.png';
@@ -61,19 +62,15 @@ Enemy.prototype.reset = function() {
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    //console.log(this.x, this.y);
-};
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+};
 
 //***************Player Classes******************************
 
 var Player = function (x,y) {
     this.x = x;
     this.y = y;
-    this.lives = 5;
+    this.soul = 100;
     this.score = 0;
     this.sprite = 'images/char-boy.png';
     this.momGems = 0;
@@ -102,20 +99,17 @@ Player.prototype.handleInput = function(direction) {
     } else if (direction === 'right') {
         this.x = this.x + 100;
     }
-
     //Check to see if new player postion is out of bounds
     //if so, reset postion to last good position
     if (this.x < 0) {
         this.x = 0;
-    } else if (this.x > 400) {
-        this.x = 400;
-    } else if (this.y > 380) {
-        this.y = 380;
+    } else if (this.x > 800) {
+        this.x = 800;
+    } else if (this.y > 540) {
+        this.y = 540;
     } else if (this.y < 60) {
         this.y = 60;
     }
-    console.log(this.x)
-    console.log(this.y);
     this.checkCollisions();
 
 };
@@ -127,9 +121,18 @@ Player.prototype.checkCollisions = function() {
         player.score += gem.points;
         gem = new Gem();
     }
-    if ((this.x === 400) && this.y === 380) {
+
+    //check to see if player is on "home" block
+    if ((this.x === 800) && this.y === 540) {
         this.momGems = this.momGems + player.score;
         player.score = 0;
+    }
+
+    if (this.momGems >= 10) {
+        console.log("im here");
+        ctx.drawImage(Resources.get('images/wongame.png'), 600, 400);
+        setTimeout(function(){ location.reload();}, 5000);
+
     }
 };
 
@@ -139,8 +142,8 @@ Player.prototype.checkCollisions = function() {
 var Gem = function() {
     //Set up array for valid x,y positions for gems.
     //This keeps the gems neatly in the squares.
-    var validX = [25,125,225,325,425];
-    var validY = [115,195,275];
+    var validX = [25,125,225,325,425,525,625,725,825];
+    var validY = [115,195,275,355,435,515];
 
     //Set variable for gem points. Use all caps to denote CONST
     var GREEN_GEM_SCORE = 10;
@@ -171,9 +174,34 @@ var Gem = function() {
             this.sprite = 'images/rsz_gem-orange.png';
             this.points = ORANGE_GEM_SCORE;
         }
+
 };
 
 Gem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+
+
+var GameOver = function() {
+    this.x = 200;
+    this.y = 300;
+    this.sprite = '';
+};
+
+
+GameOver.prototype.endGame = function() {
+    var wonOrLost = 'won';
+    if (wonOrLost === 'won') {
+        this.sprite =  'images/wongame.png';
+    } else if (wonOrLost === 'lost') {
+        this.sprite = 'images/lostgame.png';
+    }
+    this.render();
+};
+
+
+GameOver.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
@@ -183,12 +211,12 @@ Gem.prototype.render = function() {
 // Place the player object in a variable called player
 
 var allEnemies = [];
-var player = new Player(200, 380);
+var player = new Player(400, 540);
 var gem = new Gem();
 var enemySprite;
-var validY = [60,140,220];
+var validY = [60,140,220,300,380,460];
 //Assign enemies to array.
-for (var i = 0; i < 3; i++) {
+for (var i = 0; i < 6; i++) {
     var y= 0;
     var x = -20;
     //Randomly choose enemy sprite
@@ -206,6 +234,10 @@ for (var i = 0; i < 3; i++) {
     allEnemies.push(enemy);
 }
 
+
+
+
+
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keydown', function(e) {
@@ -213,12 +245,28 @@ document.addEventListener('keydown', function(e) {
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down'
+        40: 'down',
+        87: 'up',
+        65: 'left',
+        83: 'down',
+        68: 'right'
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
+
+//Show instructions window when button is clicked.
+function showInstructions() {
+    document.getElementById('info').style.display = 'block';
+}
+
+//Hide instructions window when button is clicked.
+function hideInstructions() {
+    document.getElementById('info').style.display = 'none';
+}
+
+//Keep window from moving down when keys are pressed.
 window.addEventListener('keydown', function(e){
   if ([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
     e.preventDefault();

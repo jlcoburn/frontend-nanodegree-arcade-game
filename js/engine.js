@@ -25,9 +25,11 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 505;
-    canvas.height = 606;
-    doc.body.appendChild(canvas);
+//    canvas.width = 505;
+//    canvas.height = 606;
+      canvas.width = 909;
+      canvas.height = 769; //809
+      doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -67,6 +69,7 @@ var Engine = (function(global) {
         reset();
         lastTime = Date.now();
         main();
+
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -81,7 +84,8 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         document.getElementById('yourGems').innerHTML = 'Your Gems: ' + player.score + "    ";
-        document.getElementById('momGems').innerHTML = 'Moms Gems: ' + player.momGems;
+        document.getElementById('momGems').innerHTML = 'Mom&#39s Gems: ' + player.momGems;
+        document.getElementById('playerSoul').innerHTML = "Your soul: " + player.soul +"%";
         // checkCollisions();
     }
 
@@ -115,10 +119,13 @@ var Engine = (function(global) {
                 'images/stone-block.png',   // Row 2 of 3 of stone
                 'images/stone-block.png',   // Row 3 of 3 of stone
                 'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
+               // 'images/grass-block.png',   // Row 2 of 2 of grass
+                'images/stone-block.png',
+                'images/grass-block.png',
+                'images/grass-block.png'
             ],
-            numRows = 6,
-            numCols = 5,
+            numRows = 8, //6
+            numCols = 9,  //5
             row, col;
 
         /* Loop through the number of rows and columns we've defined above
@@ -137,7 +144,7 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-        ctx.drawImage(Resources.get('images/Selector.png'), 404, 375);
+        ctx.drawImage(Resources.get('images/Selector.png'), 808, 540);
         renderEntities();
     }
 
@@ -165,8 +172,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
-    }
+      }
 
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
@@ -184,7 +190,9 @@ var Engine = (function(global) {
         'images/char-princess-girl.png',
         'images/rsz_gem-green.png',
         'images/rsz_gem-blue.png',
-        'images/rsz_gem-orange.png'
+        'images/rsz_gem-orange.png',
+        'images/wongame.png',
+        'images/lostgame.png'
     ]);
     Resources.onReady(init);
 
