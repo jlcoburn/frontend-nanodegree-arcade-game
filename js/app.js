@@ -26,14 +26,21 @@ Enemy.prototype.update = function(dt) {
         this.reset();
     }
 
-    //Check for player/enemy collision, set appropriate variables if true
+    //Check for player/enemy collision, reset position
+    //subtract held gems and soul, move gem to new position
     if (this.x + 50 >= player.x && this.x < player.x + 50 &&
         this.y === player.y) {
         player.x = 400;
         player.y = 540;
         player.score = 0;
         player.soul -= 20;
+        gem = new Gem();
+    }
 
+    //If player loses their soul, display the lose screen
+    if (player.soul <= 0) {
+        document.getElementById('gamelost').style.display='block';
+        setTimeout(function(){ location.reload();},5000);
     }
 };
 
@@ -48,18 +55,10 @@ Enemy.prototype.reset = function() {
 
     //Randomize which enemy sprite appears on screen
     var z = Math.floor(Math.random()*4);
-    if (z === 0)
-        this.sprite = 'images/char-horn-girl.png';
-    if (z === 1)
-        this.sprite = 'images/char-cat-girl.png';
-    if (z === 2)
-        this.sprite = 'images/char-pink-girl.png';
-    if (z === 3)
-        this.sprite = 'images/char-princess-girl.png';
-
-
+    this.sprite = enemyArray[z];
 };
 // Draw the enemy on the screen, required method for game
+
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
@@ -128,9 +127,10 @@ Player.prototype.checkCollisions = function() {
         player.score = 0;
     }
 
-    if (this.momGems >= 10) {
-        console.log("im here");
-        ctx.drawImage(Resources.get('images/wongame.png'), 600, 400);
+
+    //If player gets 1000 gems, display win screen.
+    if (this.momGems >= 1000) {
+        document.getElementById('gamewon').style.display = 'block';
         setTimeout(function(){ location.reload();}, 5000);
 
     }
@@ -182,30 +182,6 @@ Gem.prototype.render = function() {
 };
 
 
-
-var GameOver = function() {
-    this.x = 200;
-    this.y = 300;
-    this.sprite = '';
-};
-
-
-GameOver.prototype.endGame = function() {
-    var wonOrLost = 'won';
-    if (wonOrLost === 'won') {
-        this.sprite =  'images/wongame.png';
-    } else if (wonOrLost === 'lost') {
-        this.sprite = 'images/lostgame.png';
-    }
-    this.render();
-};
-
-
-GameOver.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
-
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
@@ -214,6 +190,11 @@ var allEnemies = [];
 var player = new Player(400, 540);
 var gem = new Gem();
 var enemySprite;
+var enemyArray = ['images/char-horn-girl.png',
+                  'images/char-cat-girl.png',
+                  'images/char-princess-girl.png',
+                  'images/char-pink-girl.png'];
+
 var validY = [60,140,220,300,380,460];
 //Assign enemies to array.
 for (var i = 0; i < 6; i++) {
@@ -221,14 +202,8 @@ for (var i = 0; i < 6; i++) {
     var x = -20;
     //Randomly choose enemy sprite
     var z = Math.floor(Math.random()*4);
-    if (z === 0)
-        enemySprite = 'images/char-horn-girl.png';
-    if (z === 1)
-        enemySprite = 'images/char-cat-girl.png';
-    if (z === 2)
-        enemySprite = 'images/char-pink-girl.png';
-    if (z === 3)
-        enemySprite = 'images/char-princess-girl.png';
+    enemySprite = enemyArray[z];
+
     y = validY[Math.floor(Math.random()*validY.length)];
     var enemy = new Enemy(x,y, enemySprite);
     allEnemies.push(enemy);

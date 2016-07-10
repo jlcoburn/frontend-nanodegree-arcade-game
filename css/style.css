@@ -7,18 +7,6 @@ body {
     font-size: 24px;
 }
 
-#yourGems {
-    text-align: left;
-}
-
-#momGems{
-    text-align: center;
-}
-
-#playerSoul {
-    text-align: right;
-}
-
 .instructions {
     display:none;
     background-color: lightgreen;
@@ -29,6 +17,18 @@ body {
     height: 80%;
     border: 3px solid #73AD21;
 }
+
+.gameover {
+    display: none;
+    background-color: lightgreen;
+    position: fixed;
+    left: 25%;
+    top: 10%;
+    width: 50%;
+    height: 40%;
+    border: 3px solid blue;
+}
+
 
 p {
     margin: 10px;
