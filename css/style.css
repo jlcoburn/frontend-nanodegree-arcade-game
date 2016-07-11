@@ -10,6 +10,7 @@ body {
 .instructions {
     display:none;
     background-color: lightgreen;
+    overflow: scroll;
     position: fixed;
     left: 25%;
     top: 10%;

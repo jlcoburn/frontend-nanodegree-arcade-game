@@ -1,4 +1,4 @@
-
+'use strict';
 
 // ************Enemy Classes****************************
 var Enemy = function(x,y,enemySprite) {
@@ -117,14 +117,14 @@ Player.prototype.checkCollisions = function() {
 
     //Check for collision with Gem
     if ((this.x + 25) === gem.x && (this.y + 55) === gem.y) {
-        player.score += gem.points;
+        this.score += gem.points;
         gem = new Gem();
     }
 
     //check to see if player is on "home" block
     if ((this.x === 800) && this.y === 540) {
-        this.momGems = this.momGems + player.score;
-        player.score = 0;
+        this.momGems = this.momGems + this.score;
+        this.score = 0;
     }
 
 
@@ -241,9 +241,11 @@ function hideInstructions() {
     document.getElementById('info').style.display = 'none';
 }
 
+//Removed below code to allow play on smaller displays.
+
 //Keep window from moving down when keys are pressed.
-window.addEventListener('keydown', function(e){
+/*window.addEventListener('keydown', function(e){
   if ([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
     e.preventDefault();
   }
-}, false);
+}, false);*/
